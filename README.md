@@ -20,7 +20,7 @@
 │  Tauri 2 窗口（WebView2）                    │
 │  加载 public/ 前端（与 Electron 版共用）     │
 └──────────────────┬──────────────────────────┘
-                   │ fetch http://localhost:3055（CORS 全开）
+                   │ fetch http://127.0.0.1:3055（CORS 全开）
 ┌──────────────────▼──────────────────────────┐
 │  Node sidecar（SEA 单文件 exe）              │
 │  server.js → Express（mammoth/pdf-parse/    │
@@ -76,6 +76,10 @@ markdown-editor-tauri/
 │   └── icons/            # 应用图标
 └── package.json
 ```
+
+## 🎨 图标署名
+
+- 主题切换按钮的月牙图标几何参考自 [Twemoji](https://github.com/twitter/twemoji) 的 🌙（新月）图形，遵循 [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/) 许可；其余图标为项目原创的「版式网格」线条图标系统。
 
 ## 📄 许可证
 

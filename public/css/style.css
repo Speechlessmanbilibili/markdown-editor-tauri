@@ -257,10 +257,10 @@ body {
 .icon-btn svg { width: 16px; height: 16px; }
 
 /* 太阳/月亮 —— 亮色显示月亮，暗色显示太阳 */
-.theme-sun { display: none; }
-.theme-moon { display: block; }
-.dark .theme-sun { display: block; }
-.dark .theme-moon { display: none; }
+.theme-sun { display: block; }
+.theme-moon { display: none; }
+.dark .theme-sun { display: none; }
+.dark .theme-moon { display: block; }
 
 /* ============================================================
    Main Layout

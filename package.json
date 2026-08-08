@@ -1,0 +1,29 @@
+{
+  "name": "markdown-editor-tauri",
+  "version": "1.0.0",
+  "description": "Markdown Editor Pro — Tauri 版桌面编辑器（Electron 版姊妹项目）",
+  "author": "Speechlessmanbilibili",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "sidecar": "node scripts/build-sidecar.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "iconv-lite": "^0.7.2",
+    "mammoth": "^1.6.0",
+    "marked": "^9.1.0",
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^1.1.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.9.0",
+    "esbuild": "^0.25.0",
+    "postject": "^1.0.0-alpha.6"
+  }
+}

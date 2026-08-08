@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markdown Editor Pro</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- Ambient Background -->
+<div class="bg-ambient">
+  <div class="bg-orb bg-orb--1"></div>
+  <div class="bg-orb bg-orb--2"></div>
+  <div class="bg-orb bg-orb--3"></div>
+</div>
+
+<div class="app">
+
+  <!-- ====== Header ====== -->
+  <header class="header">
+    <div class="header-left">
+      <a class="header-brand" href="/">
+        <div class="logo-mark">M↓</div>
+        <span class="logo-text">Markdown Editor Pro</span>
+      </a>
+    </div>
+
+    <div class="header-actions">
+      <button class="hdr-btn hdr-btn-green" onclick="downloadMD()" title="下载 Markdown">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>下载 .md</span>
+      </button>
+      <button class="hdr-btn hdr-btn-yellow" onclick="convertToWord()" title="导出为 Word">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg>
+        <span>导出 Word</span>
+      </button>
+      <button class="hdr-btn hdr-btn-purple" onclick="convertToPDF()" title="导出为 PDF">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>导出 PDF</span>
+      </button>
+      <button class="icon-btn" id="themeToggle" onclick="toggleTheme(this)" title="切换深色/浅色主题">🌓</button>
+    </div>
+  </header>
+
+  <!-- ====== Main ====== -->
+  <div class="main">
+
+    <!-- Sidebar — 精简：导入 + 保存 + 大纲 -->
+    <aside class="sidebar">
+
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-zone-icon">📂</div>
+        <div class="drop-zone-title">导入 Word / PDF</div>
+        <div class="drop-zone-desc">支持 .docx .pdf .txt .md</div>
+        <input type="file" id="fileInput" accept=".docx,.doc,.pdf,.txt,.md,.markdown">
+      </div>
+
+      <div class="sidebar-section">
+        <button class="btn btn-primary btn-block" onclick="saveDocument()" title="保存为新文档">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          保存为新文档
+        </button>
+        <button class="btn btn-block" onclick="openSavesPanel()" title="管理已保存的文档">
+          📋 已保存文档
+        </button>
+        <button class="btn btn-block" onclick="insertSample()">📄 插入示例</button>
+        <button class="btn btn-block btn-ghost" onclick="clearAll()">🗑 清空编辑器</button>
+      </div>
+
+      <div class="sidebar-section sidebar-section--grow">
+        <span class="sidebar-label">大纲</span>
+        <div class="outline-list" id="outlineList">
+          <div class="outline-empty">编写标题后自动生成</div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Editor + Preview -->
+    <div class="editor-area">
+
+      <div class="tabs">
+        <div class="tab active" data-pane="split" onclick="switchView('split')">📝 分屏编辑</div>
+        <div class="tab" data-pane="editor" onclick="switchView('editor')">✏️ 仅编辑</div>
+        <div class="tab" data-pane="preview" onclick="switchView('preview')">👁 仅预览</div>
+      </div>
+
+      <div class="file-info" id="fileInfo">
+        <span class="file-info-dot"></span>
+        <span id="fileName"></span>
+        <span style="color:var(--text-tertiary)">已导入</span>
+        <button class="file-info-clear" onclick="clearFileInfo()">×</button>
+      </div>
+
+      <!-- Formatting Toolbar -->
+      <div class="toolbar" id="toolbar">
+        <button class="tb-btn" onclick="toolBold()" title="粗体 (Ctrl+B)"><b>B</b></button>
+        <button class="tb-btn" onclick="toolItalic()" title="斜体 (Ctrl+I)"><i>I</i></button>
+        <button class="tb-btn" onclick="toolStrikethrough()" title="删除线"><s>S</s></button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" onclick="toolHeading(1)" title="一级标题">H1</button>
+        <button class="tb-btn" onclick="toolHeading(2)" title="二级标题">H2</button>
+        <button class="tb-btn" onclick="toolHeading(3)" title="三级标题">H3</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" onclick="toolLink()" title="链接 (Ctrl+K)">🔗</button>
+        <button class="tb-btn" onclick="toolImage()" title="图片">🖼</button>
+        <button class="tb-btn" onclick="toolCode()" title="行内代码 (Ctrl+`)">&lt;/&gt;</button>
+        <button class="tb-btn" onclick="toolCodeBlock()" title="代码块">📋</button>
+        <span class="tb-sep"></span>
+        <button class="tb-btn" onclick="toolQuote()" title="引用">❝</button>
+        <button class="tb-btn" onclick="toolList('- ')" title="无序列表">•≡</button>
+        <button class="tb-btn" onclick="toolList('1. ')" title="有序列表">1≡</button>
+        <button class="tb-btn" onclick="toolHorizontalRule()" title="分隔线">—</button>
+      </div>
+
+      <!-- Find & Replace Bar -->
+      <div class="find-bar" id="findBar" style="display:none">
+        <input class="find-input" id="findInput" placeholder="查找..." oninput="doFind()">
+        <input class="find-input" id="replaceInput" placeholder="替换为...">
+        <span class="find-count" id="findCount"></span>
+        <button class="btn btn-sm" onclick="findNext()">下一个</button>
+        <button class="btn btn-sm" onclick="findPrev()">上一个</button>
+        <button class="btn btn-sm btn-warning" onclick="doReplace()">替换</button>
+        <button class="btn btn-sm btn-warning" onclick="doReplaceAll()">全部替换</button>
+        <button class="btn btn-sm btn-ghost" onclick="closeFind()">✕</button>
+      </div>
+
+      <div class="panes" id="panes">
+        <div class="pane" id="editor-pane">
+          <div class="pane-header">Markdown 编辑</div>
+          <div class="pane-body">
+            <textarea
+              class="editor-textarea"
+              id="editor"
+              placeholder="# 开始编写 Markdown...
+
+## 支持的功能
+
+- **粗体** 和 *斜体*
+- [链接](https://example.com)
+- 代码块
+- 表格
+- 图片
+
+> 拖放 .docx 或 .pdf 文件到页面即可转换
+
+```javascript
+console.log('Hello Markdown!');
+```"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="pane" id="preview-pane">
+          <div class="pane-header">实时预览</div>
+          <div class="pane-body">
+            <iframe class="preview-frame" id="previewFrame" sandbox="allow-same-origin"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Bar -->
+      <div class="status-bar" id="statusBar">
+        <span id="wordCount">0 词</span>
+        <span class="status-sep">|</span>
+        <span id="charCount">0 字符</span>
+        <span class="status-sep">|</span>
+        <span id="readTime">~0 分钟</span>
+        <span class="status-grow"></span>
+        <span class="status-hint">Ctrl+F 查找  Ctrl+S 保存</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ====== 已保存文档面板（右侧抽屉） ====== -->
+<div class="saves-overlay" id="savesOverlay" onclick="closeSavesPanel()"></div>
+<div class="saves-panel" id="savesPanel">
+  <div class="saves-panel-header">
+    <span class="saves-panel-title">已保存文档</span>
+    <button class="saves-panel-close" onclick="closeSavesPanel()">✕</button>
+  </div>
+  <div class="saves-panel-body" id="savesPanelBody">
+    <div class="saves-empty">加载中...</div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/js/liquid-glass-fx.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

@@ -573,10 +573,11 @@ async function convertToPDF() {
     if (!res.ok) throw new Error('服务器错误');
 
     const data = await res.json();
+    const isPdf = /\.pdf$/i.test(data.filename || '');
 
-    // Tauri：原生「另存为」对话框保存打印页 HTML
+    // Tauri：原生「另存为」对话框保存文件（真 PDF 或回退打印页）
     if (inTauri()) {
-      const dest = await saveViaDialog(data.filename || 'print-pdf.html');
+      const dest = await saveViaDialog(data.filename || 'document.pdf');
       if (!dest) return;
       try {
         const dir = await window.__TAURI__.core.invoke('uploads_dir');
@@ -584,10 +585,27 @@ async function convertToPDF() {
           src: `${dir}/${data.filename}`,
           dest,
         });
-        toast(`已保存打印页到 ${dest}，用浏览器打开后 Ctrl+P 可另存为 PDF`, 'success');
+        toast(
+          isPdf
+            ? `PDF 已保存到 ${dest}`
+            : `已保存打印页到 ${dest}，用浏览器打开后 Ctrl+P 可另存为 PDF`,
+          'success'
+        );
       } catch (err) {
         toast(`PDF 导出失败：${err}`, 'error');
       }
+      return;
+    }
+
+    // 浏览器：PDF 直接下载；回退打印页则打开供打印
+    if (isPdf) {
+      const a = document.createElement('a');
+      a.href = data.downloadUrl;
+      a.download = data.filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      toast('PDF 已下载', 'success');
       return;
     }
 
@@ -597,7 +615,7 @@ async function convertToPDF() {
       // Popup blocked — fallback to direct download
       const a = document.createElement('a');
       a.href = data.downloadUrl;
-      a.download = 'print-pdf.html';
+      a.download = data.filename || 'print-pdf.html';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

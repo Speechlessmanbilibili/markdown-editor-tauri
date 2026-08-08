@@ -173,22 +173,19 @@ function createApp(opts = {}) {
     }
   });
 
-  // Markdown → PDF 打印页
-  app.post('/api/convert-to-pdf', (req, res) => {
+  // Markdown → PDF（真 PDF，puppeteer-core + 系统 Edge 无头打印；失败回退打印页 HTML）
+  app.post('/api/convert-to-pdf', async (req, res) => {
     try {
       const { markdown } = req.body;
       if (!markdown) return res.status(400).json({ error: '请提供 Markdown 内容' });
 
       const html = marked.parse(markdown);
-      const filename = `print-${uuidv4()}.html`;
-
       const fullHtml = `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <title>导出 PDF</title>
 <style>
-  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
   body { font-family: 'Microsoft YaHei', 'SimHei', sans-serif; font-size: 14px; line-height: 1.8; padding: 40px; color: #333; max-width: 800px; margin: 0 auto; }
   h1 { font-size: 26px; color: #1a1a2e; border-bottom: 2px solid #333; padding-bottom: 8px; }
   h2 { font-size: 22px; color: #2e7d32; }
@@ -202,35 +199,30 @@ function createApp(opts = {}) {
   th { background: #e8e8e8; }
   img { max-width: 100%; }
   p { margin: 10px 0; }
-  .print-btn {
-    position: fixed; top: 16px; right: 16px; z-index: 999;
-    padding: 10px 20px; background: #4f6ef6; color: #fff; border: none;
-    border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600;
-    box-shadow: 0 4px 12px rgba(79,110,246,0.3);
-  }
-  .print-btn:hover { background: #3b5de7; }
-  @media print { .print-btn { display: none; } }
 </style>
 </head>
-<body>
-<button class="print-btn" onclick="window.print()">🖨 打印 / 另存为 PDF</button>
-${html}
-<script>
-  setTimeout(() => {
-    if (confirm('页面已生成，是否立即打印/另存为 PDF？\\n\\n点击"确定"打开打印对话框，在目标中选择"另存为 PDF"即可。')) {
-      window.print();
-    }
-  }, 500);
-</script>
-</body>
+<body>${html}</body>
 </html>`;
 
-      const filePath = path.join(uploadsDir, filename);
-      fs.writeFileSync(filePath, fullHtml, 'utf-8');
-      res.json({ filename, downloadUrl: `/uploads/${filename}` });
+      // 优先生成真 PDF
+      const pdfName = `converted-${uuidv4()}.pdf`;
+      const pdfPath = path.join(uploadsDir, pdfName);
+      const pdfOk = await htmlToPdf(fullHtml, pdfPath);
+      if (pdfOk) {
+        return res.json({ filename: pdfName, downloadUrl: `/uploads/${pdfName}` });
+      }
+
+      // 回退：生成打印页 HTML（用户用浏览器打开后 Ctrl+P 另存为 PDF）
+      const htmlName = `print-${uuidv4()}.html`;
+      const htmlPath = path.join(uploadsDir, htmlName);
+      fs.writeFileSync(htmlPath, fullHtml + `
+<button class="print-btn" onclick="window.print()">🖨 打印 / 另存为 PDF</button>
+<script>setTimeout(() => { if (confirm('页面已生成，是否立即打印/另存为 PDF？\\n\\n点击"确定"打开打印对话框，在目标中选择"另存为 PDF"即可。')) { window.print(); } }, 500);</script>
+<style>@media print { .print-btn { display: none; } } .print-btn { position: fixed; top: 16px; right: 16px; z-index: 999; padding: 10px 16px; background: #4f6ef6; color: #fff; border: none; border-radius: 8px; cursor: pointer; }</style>`, 'utf-8');
+      return res.json({ filename: htmlName, downloadUrl: `/uploads/${htmlName}`, fallback: true });
     } catch (err) {
-      console.error('生成 PDF 打印页失败:', err);
-      res.status(500).json({ error: 'PDF 打印页生成失败: ' + err.message });
+      console.error('生成 PDF 失败:', err);
+      res.status(500).json({ error: 'PDF 生成失败: ' + err.message });
     }
   });
 
@@ -333,6 +325,43 @@ table{border-collapse:collapse;width:100%;}th,td{border:1px solid #999;padding:8
 }
 
 // ==================== 辅助函数 ====================
+
+// ---------- PDF 渲染（puppeteer-core + 系统 Edge 无头打印） ----------
+const EDGE_PATHS = [
+  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+  'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+  '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge',
+  '/usr/bin/microsoft-edge',
+  '/usr/bin/microsoft-edge-stable',
+];
+
+function findEdge() {
+  return EDGE_PATHS.find((p) => fs.existsSync(p)) || null;
+}
+
+/** 用系统 Edge 无头打印 HTML → PDF；成功返回 true */
+async function htmlToPdf(html, outPath) {
+  const edge = findEdge();
+  if (!edge) return false;
+  let browser;
+  try {
+    const puppeteer = require('puppeteer-core');
+    browser = await puppeteer.launch({
+      executablePath: edge,
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-gpu'],
+    });
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'networkidle0', timeout: 30000 });
+    await page.pdf({ path: outPath, format: 'A4', printBackground: true });
+    return true;
+  } catch (err) {
+    console.error('PDF 渲染失败（回退打印页）:', err.message);
+    return false;
+  } finally {
+    if (browser) { try { await browser.close(); } catch {} }
+  }
+}
 
 const WORD_STYLE_MAP = [
   "p[style-name='Title'] => h1:fresh",

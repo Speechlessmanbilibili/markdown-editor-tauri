@@ -3,5 +3,6 @@ build/
 src-tauri/target/
 src-tauri/gen/schemas/
 src-tauri/binaries/
+public/uploads/
 icon-source.png
 *.log

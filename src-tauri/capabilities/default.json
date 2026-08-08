@@ -3,5 +3,5 @@
   "identifier": "default",
   "description": "Markdown Editor Tauri 默认能力",
   "windows": ["main"],
-  "permissions": ["core:default"]
+  "permissions": ["core:default", "dialog:default"]
 }

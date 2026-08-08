@@ -95,6 +95,12 @@ fn spawn_sidecar(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .invoke_handler(tauri::generate_handler![
+            copy_export_file,
+            write_text_file,
+            uploads_dir
+        ])
         .setup(|app| {
             if let Err(e) = spawn_sidecar(app.handle()) {
                 eprintln!("[markdown-editor-tauri] sidecar 启动失败: {e}");
@@ -108,4 +114,29 @@ fn main() {
     if let Some(mut child) = SIDECAR.lock().unwrap().take() {
         let _ = child.kill();
     }
+}
+
+/// 复制导出的文件到用户选择的保存位置
+#[tauri::command]
+fn copy_export_file(src: String, dest: String) -> Result<(), String> {
+    std::fs::copy(&src, &dest).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+/// 写入文本文件（用于导出 .md）
+#[tauri::command]
+fn write_text_file(path: String, content: String) -> Result<(), String> {
+    std::fs::write(&path, content).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+/// 返回 sidecar 的 uploads 目录（导出的 Word/PDF 文件所在处）
+#[tauri::command]
+fn uploads_dir(app: tauri::AppHandle) -> Result<String, String> {
+    let dir = app
+        .path()
+        .app_data_dir()
+        .map_err(|e| e.to_string())?
+        .join("uploads");
+    Ok(dir.to_string_lossy().to_string())
 }

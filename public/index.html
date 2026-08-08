@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<!-- Ambient Background -->
+<!-- 装饰背景容器（保留结构，视觉层已隐藏） -->
 <div class="bg-ambient">
   <div class="bg-orb bg-orb--1"></div>
   <div class="bg-orb bg-orb--2"></div>
@@ -21,25 +21,30 @@
   <header class="header">
     <div class="header-left">
       <a class="header-brand" href="/">
-        <div class="logo-mark">M↓</div>
+        <div class="logo-mark">M</div>
         <span class="logo-text">Markdown Editor Pro</span>
       </a>
     </div>
 
     <div class="header-actions">
       <button class="hdr-btn hdr-btn-green" onclick="downloadMD()" title="下载 Markdown">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M5.5 3.8h8.2l4.5 4.5v11.9H5.5z"/><path d="M13.7 3.8v4.5h4.5"/><line x1="12" y1="10.6" x2="12" y2="14.6"/><path d="M9.7 12.6L12 14.9l2.3-2.3"/><path d="M9.9 16.4h4.2v1.6H9.9z" fill="currentColor" stroke="none"/></svg>
         <span>下载 .md</span>
       </button>
       <button class="hdr-btn hdr-btn-yellow" onclick="convertToWord()" title="导出为 Word">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M5.5 3.8h8.2l4.5 4.5v11.9H5.5z"/><path d="M13.7 3.8v4.5h4.5"/><line x1="8.2" y1="10.2" x2="16.2" y2="10.2"/><line x1="8.2" y1="13.4" x2="14.5" y2="13.4"/><line x1="8.2" y1="16.6" x2="14.6" y2="16.6"/><path d="M15 16.1h1.4v1.4H15z" fill="currentColor" stroke="none"/></svg>
         <span>导出 Word</span>
       </button>
       <button class="hdr-btn hdr-btn-purple" onclick="convertToPDF()" title="导出为 PDF">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M6.8 3.8h8l4.4 4.4v11.9H6.8z"/><path d="M14.8 3.8v4.4h4.4"/><path d="M4 4.6h2.6v2.6H4z" fill="currentColor" stroke="none"/><line x1="9" y1="11.2" x2="16" y2="11.2"/><line x1="9" y1="14.8" x2="16" y2="14.8"/></svg>
         <span>导出 PDF</span>
       </button>
-      <button class="icon-btn" id="themeToggle" onclick="toggleTheme(this)" title="切换深色/浅色主题">🌓</button>
+      <button class="icon-btn" id="themeToggle" onclick="toggleTheme(this)" title="切换深色/浅色主题">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter" class="theme-icon">
+          <circle class="theme-sun" cx="12" cy="12" r="4.6"/><line class="theme-sun" x1="12" y1="3.8" x2="12" y2="6.2"/><line class="theme-sun" x1="12" y1="17.8" x2="12" y2="20.2"/><line class="theme-sun" x1="3.8" y1="12" x2="6.2" y2="12"/><line class="theme-sun" x1="17.8" y1="12" x2="20.2" y2="12"/><path class="theme-sun" d="M6 6h1.7v1.7H6z" fill="currentColor" stroke="none"/><path class="theme-sun" d="M16.3 6h1.7v1.7h-1.7z" fill="currentColor" stroke="none"/><path class="theme-sun" d="M6 16.3h1.7v1.7H6z" fill="currentColor" stroke="none"/><path class="theme-sun" d="M16.3 16.3h1.7v1.7h-1.7z" fill="currentColor" stroke="none"/>
+          <path class="theme-moon" d="M6.2 14.9A8.6 8.6 0 1 1 18.4 7.6L6.2 14.9z"/><path class="theme-moon" d="M17.8 3.8h1.8v1.8h-1.8z" fill="currentColor" stroke="none"/>
+        </svg>
+      </button>
     </div>
   </header>
 
@@ -50,7 +55,9 @@
     <aside class="sidebar">
 
       <div class="drop-zone" id="dropZone">
-        <div class="drop-zone-icon">📂</div>
+        <div class="drop-zone-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 6.6h5.6l1.9 2.4h8.5v6.2l-1.9 2.6H4z"/><line x1="12" y1="10.8" x2="12" y2="14.6"/><path d="M9.8 12.9L12 15.1l2.2-2.2"/><path d="M9.8 16.4h4.4v1.3H9.8z" fill="currentColor" stroke="none"/></svg>
+        </div>
         <div class="drop-zone-title">导入 Word / PDF</div>
         <div class="drop-zone-desc">支持 .docx .pdf .txt .md</div>
         <input type="file" id="fileInput" accept=".docx,.doc,.pdf,.txt,.md,.markdown">
@@ -58,14 +65,21 @@
 
       <div class="sidebar-section">
         <button class="btn btn-primary btn-block" onclick="saveDocument()" title="保存为新文档">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M5.5 5.2h6.9L17.3 10v9.3H5.5z"/><path d="M12.4 5.2v4.8h4.9"/><line x1="7.7" y1="5.2" x2="7.7" y2="8.3"/><line x1="10.3" y1="5.2" x2="10.3" y2="8.3"/><path d="M7.7 14.4h8.4v2.1H7.7z" fill="currentColor" stroke="none"/></svg>
           保存为新文档
         </button>
         <button class="btn btn-block" onclick="openSavesPanel()" title="管理已保存的文档">
-          📋 已保存文档
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M5.5 3.8h7l4.2 4.2v12.2h-11.2z"/><path d="M12.5 3.8v4.2h4.2"/><path d="M9.4 14.2l1.9 2.2 3.6-4.1 1.5 1.3-5.1 5.8-3.4-3.9z" fill="currentColor" stroke="none"/></svg>
+          已保存文档
         </button>
-        <button class="btn btn-block" onclick="insertSample()">📄 插入示例</button>
-        <button class="btn btn-block btn-ghost" onclick="clearAll()">🗑 清空编辑器</button>
+        <button class="btn btn-block" onclick="insertSample()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M5.5 3.8h7l4.2 4.2v12.2h-11.2z"/><path d="M12.5 3.8v4.2h4.2"/><line x1="12" y1="11" x2="12" y2="15.4"/><line x1="9.8" y1="13.2" x2="14.2" y2="13.2"/></svg>
+          插入示例
+        </button>
+        <button class="btn btn-block btn-ghost" onclick="clearAll()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 6.4h14"/><path d="M9.7 6.4V4.7h4.6v1.7"/><path d="M7.3 6.4l1 13a1 1 0 0 0 1 .8h5.4a1 1 0 0 0 1-.8l1-13z"/><path d="M9.9 13h4.2v1.5H9.9z" fill="currentColor" stroke="none"/></svg>
+          清空编辑器
+        </button>
       </div>
 
       <div class="sidebar-section sidebar-section--grow">
@@ -81,9 +95,18 @@
     <div class="editor-area">
 
       <div class="tabs">
-        <div class="tab active" data-pane="split" onclick="switchView('split')">📝 分屏编辑</div>
-        <div class="tab" data-pane="editor" onclick="switchView('editor')">✏️ 仅编辑</div>
-        <div class="tab" data-pane="preview" onclick="switchView('preview')">👁 仅预览</div>
+        <div class="tab active" data-pane="split" onclick="switchView('split')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4.2 4.6h7.3v14.8H4.2z"/><path d="M12.5 4.6H19.8v14.8h-7.3z"/><line x1="6.6" y1="9.2" x2="10" y2="9.2"/><line x1="6.6" y1="12.4" x2="10" y2="12.4"/><line x1="6.6" y1="15.6" x2="8.6" y2="15.6"/></svg>
+          分屏编辑
+        </div>
+        <div class="tab" data-pane="editor" onclick="switchView('editor')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><line x1="5" y1="6.2" x2="14.4" y2="6.2"/><line x1="5" y1="10.2" x2="14.4" y2="10.2"/><line x1="5" y1="14.2" x2="11" y2="14.2"/><path d="M15.4 13.2h2.4v5.4h-2.4z" fill="currentColor" stroke="none"/></svg>
+          仅编辑
+        </div>
+        <div class="tab" data-pane="preview" onclick="switchView('preview')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 3.8h14v16.4H5z"/><line x1="7.5" y1="6.2" x2="16.7" y2="6.2"/><line x1="7.5" y1="10.2" x2="16.7" y2="10.2"/><line x1="7.5" y1="14.2" x2="13.9" y2="14.2"/><path d="M17.2 18.3h1.4v1.4h-1.4z" fill="currentColor" stroke="none"/></svg>
+          仅预览
+        </div>
       </div>
 
       <div class="file-info" id="fileInfo">
@@ -103,15 +126,31 @@
         <button class="tb-btn" onclick="toolHeading(2)" title="二级标题">H2</button>
         <button class="tb-btn" onclick="toolHeading(3)" title="三级标题">H3</button>
         <span class="tb-sep"></span>
-        <button class="tb-btn" onclick="toolLink()" title="链接 (Ctrl+K)">🔗</button>
-        <button class="tb-btn" onclick="toolImage()" title="图片">🖼</button>
-        <button class="tb-btn" onclick="toolCode()" title="行内代码 (Ctrl+`)">&lt;/&gt;</button>
-        <button class="tb-btn" onclick="toolCodeBlock()" title="代码块">📋</button>
+        <button class="tb-btn" onclick="toolLink()" title="链接 (Ctrl+K)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M8.2 7.6a4.4 4.4 0 0 1 0 8.8h2.9V7.6H8.2z"/><path d="M15.8 16.4a4.4 4.4 0 0 1 0-8.8h-2.9v8.8h2.9z"/></svg>
+        </button>
+        <button class="tb-btn" onclick="toolImage()" title="图片">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 4.6h16v14.8H4z"/><path d="M5.8 17.4L10.4 11.8l3.1 3.3 2.9-3.3 3.5 5.6"/><path d="M14.7 7.5h1.8v1.8h-1.8z" fill="currentColor" stroke="none"/></svg>
+        </button>
+        <button class="tb-btn" onclick="toolCode()" title="行内代码 (Ctrl+`)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M9 6.4L3.8 12l5.2 5.6"/><path d="M15 6.4l5.2 5.6L15 17.6"/><line x1="4" y1="19.6" x2="20" y2="19.6"/></svg>
+        </button>
+        <button class="tb-btn" onclick="toolCodeBlock()" title="代码块">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4.2 5.2h15.6v13.6H4.2z"/><line x1="7.4" y1="9.6" x2="12.8" y2="9.6"/><line x1="7.4" y1="12.8" x2="16.6" y2="12.8"/><path d="M7.4 16h4.2v1.4H7.4z" fill="currentColor" stroke="none"/></svg>
+        </button>
         <span class="tb-sep"></span>
-        <button class="tb-btn" onclick="toolQuote()" title="引用">❝</button>
-        <button class="tb-btn" onclick="toolList('- ')" title="无序列表">•≡</button>
-        <button class="tb-btn" onclick="toolList('1. ')" title="有序列表">1≡</button>
-        <button class="tb-btn" onclick="toolHorizontalRule()" title="分隔线">—</button>
+        <button class="tb-btn" onclick="toolQuote()" title="引用">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M8 6.8h4v4.4"/><path d="M16 17.2h-4v-4.4"/></svg>
+        </button>
+        <button class="tb-btn" onclick="toolList('- ')" title="无序列表">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4.6 5.9h1.8v1.8H4.6z"/><path d="M4.6 11.9h1.8v1.8H4.6z"/><path d="M4.6 17.9h1.8v1.8H4.6z"/><line x1="9.2" y1="6.8" x2="20" y2="6.8"/><line x1="9.2" y1="12.8" x2="20" y2="12.8"/><line x1="9.2" y1="18.8" x2="20" y2="18.8"/></svg>
+        </button>
+        <button class="tb-btn" onclick="toolList('1. ')" title="有序列表">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4.6 5.9h1.8v1.8H4.6z" fill="currentColor" stroke="none"/><path d="M4.6 11.9h1.8v1.8H4.6z" fill="currentColor" stroke="none"/><path d="M4.6 17.9h1.8v1.8H4.6z" fill="currentColor" stroke="none"/><line x1="9.2" y1="6.8" x2="20" y2="6.8"/><line x1="9.2" y1="12.8" x2="20" y2="12.8"/><line x1="9.2" y1="18.8" x2="20" y2="18.8"/><line x1="5.5" y1="6.8" x2="5.5" y2="7.9"/></svg>
+        </button>
+        <button class="tb-btn" onclick="toolHorizontalRule()" title="分隔线">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><line x1="4.5" y1="12" x2="19.5" y2="12"/><path d="M11 10.7h2v2.6h-2z" fill="currentColor" stroke="none"/><line x1="6.2" y1="12" x2="6.2" y2="14.6"/><line x1="17.8" y1="12" x2="17.8" y2="14.6"/></svg>
+        </button>
       </div>
 
       <!-- Find & Replace Bar -->
@@ -190,7 +229,6 @@ console.log('Hello Markdown!');
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/js/liquid-glass-fx.js"></script>
 <script src="/js/app.js"></script>
 </body>
 </html>

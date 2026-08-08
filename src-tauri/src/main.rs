@@ -59,12 +59,22 @@ fn spawn_sidecar(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error
     std::fs::create_dir_all(&saves_dir)?;
     std::fs::create_dir_all(&uploads_dir)?;
 
-    let child = Command::new(&path)
-        .env("MARKDOWN_EDITOR_SAVES_DIR", &saves_dir)
+    let mut cmd = Command::new(&path);
+    cmd.env("MARKDOWN_EDITOR_SAVES_DIR", &saves_dir)
         .env("MARKDOWN_EDITOR_UPLOADS_DIR", &uploads_dir)
         .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .spawn()?;
+        .stderr(Stdio::null());
+
+    // Windows：sidecar（Node SEA）是控制台程序，必须加 CREATE_NO_WINDOW
+    // 否则每次启动都会弹出一个黑色命令行窗口
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        const CREATE_NO_WINDOW: u32 = 0x08000000;
+        cmd.creation_flags(CREATE_NO_WINDOW);
+    }
+
+    let child = cmd.spawn()?;
 
     *SIDECAR.lock().unwrap() = Some(child);
 

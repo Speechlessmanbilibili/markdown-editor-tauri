@@ -10,11 +10,24 @@ use tauri::Manager;
 /// 全局持有 sidecar 子进程句柄，应用退出时清理
 static SIDECAR: Mutex<Option<Child>> = Mutex::new(None);
 
-/// 定位 sidecar 可执行文件：
-/// - 开发模式：src-tauri/binaries/ 下
-/// - 生产模式：打包后位于资源目录（resources/）
+/// 定位 sidecar 可执行文件，按优先级：
+/// 1. 打包安装后的资源目录（resources/）
+/// 2. exe 同目录（直接运行 release exe 时，sidecar 放在旁边即可）
+/// 3. 开发模式：src-tauri/binaries/ 或 target/debug/
 fn sidecar_path(app: &tauri::AppHandle) -> Result<PathBuf, Box<dyn std::error::Error>> {
     let name = format!("markdown-server{}", std::env::consts::EXE_SUFFIX);
+
+    let res = app.path().resource_dir()?.join(&name);
+    if res.exists() {
+        return Ok(res);
+    }
+
+    if let Ok(exe) = std::env::current_exe() {
+        let beside = exe.parent().unwrap_or(std::path::Path::new(".")).join(&name);
+        if beside.exists() {
+            return Ok(beside);
+        }
+    }
 
     #[cfg(debug_assertions)]
     {
@@ -24,7 +37,6 @@ fn sidecar_path(app: &tauri::AppHandle) -> Result<PathBuf, Box<dyn std::error::E
         if dev.exists() {
             return Ok(dev);
         }
-        // tauri dev 也可能把 externalBin 复制到 target 目录
         let target = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("target")
             .join("debug")
@@ -34,8 +46,7 @@ fn sidecar_path(app: &tauri::AppHandle) -> Result<PathBuf, Box<dyn std::error::E
         }
     }
 
-    let res = app.path().resource_dir()?.join(&name);
-    Ok(res)
+    Err("sidecar 未找到：请将 markdown-server.exe 放在应用同目录或资源目录".into())
 }
 
 fn spawn_sidecar(app: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {

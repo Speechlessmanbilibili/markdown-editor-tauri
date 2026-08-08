@@ -45,3 +45,14 @@ const fuse = 'NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2';
 run(`npx postject ${outExe} NODE_SEA_BLOB ${path.join(buildDir, 'sea-prep.blob')} --sentinel-fuse ${fuse}`);
 
 console.log('✅ sidecar 构建完成:', outExe, `(${(fs.statSync(outExe).size / 1024 / 1024).toFixed(1)} MB)`);
+
+// 同时复制一份到 target/release/，使未打包的 release exe 直接双击运行时也能找到 sidecar
+const relDir = path.join(root, 'src-tauri', 'target', 'release');
+const relOut = path.join(relDir, 'markdown-server.exe');
+try {
+  fs.mkdirSync(relDir, { recursive: true });
+  fs.copyFileSync(outExe, relOut);
+  console.log('✅ 已复制到 release 目录:', relOut);
+} catch (e) {
+  console.log('[build-sidecar] 复制到 release 目录跳过:', e.message);
+}

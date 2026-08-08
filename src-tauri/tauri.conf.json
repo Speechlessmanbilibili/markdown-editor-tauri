@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "identifier": "com.markdown-editor.tauri",
   "build": {
+    "beforeBuildCommand": "node scripts/build-sidecar.js",
     "frontendDist": "../public"
   },
   "app": {

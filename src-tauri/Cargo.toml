@@ -1,6 +1,6 @@
 [package]
 name = "markdown-editor-tauri"
-version = "1.0.0"
+version = "1.1.0"
 description = "Markdown Editor Pro — Tauri 桌面版"
 authors = ["Speechlessmanbilibili"]
 edition = "2021"

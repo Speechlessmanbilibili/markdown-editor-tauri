@@ -9,8 +9,10 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const buildDir = path.join(root, 'build');
 const binariesDir = path.join(root, 'src-tauri', 'binaries');
-const triple = process.env.TAURI_TARGET_TRIPLE || 'x86_64-pc-windows-msvc';
-const sidecarName = `markdown-server-${triple}.exe`;
+const isWin = process.platform === 'win32';
+const exeSuffix = isWin ? '.exe' : '';
+const triple = process.env.TAURI_TARGET_TRIPLE || (isWin ? 'x86_64-pc-windows-msvc' : 'x86_64-unknown-linux-gnu');
+const sidecarName = `markdown-server-${triple}${exeSuffix}`;
 const outExe = path.join(binariesDir, sidecarName);
 const nodeExe = process.execPath;
 
@@ -48,7 +50,7 @@ console.log('✅ sidecar 构建完成:', outExe, `(${(fs.statSync(outExe).size /
 
 // 同时复制一份到 target/release/，使未打包的 release exe 直接双击运行时也能找到 sidecar
 const relDir = path.join(root, 'src-tauri', 'target', 'release');
-const relOut = path.join(relDir, 'markdown-server.exe');
+const relOut = path.join(relDir, `markdown-server${exeSuffix}`);
 try {
   fs.mkdirSync(relDir, { recursive: true });
   fs.copyFileSync(outExe, relOut);
